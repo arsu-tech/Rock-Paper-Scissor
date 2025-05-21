@@ -18,7 +18,6 @@
       overflow: hidden;
       text-align: center;
       position: relative;
-      padding-bottom: 60px; /* space for ad */
     }
     h1 {
       font-size: 3em;
@@ -55,6 +54,7 @@
       border-radius: 20px;
       box-shadow: 0 0 40px #0ff;
       margin: 20px;
+      min-width: 90vw;
     }
     .emoji-list {
       display: flex;
@@ -88,23 +88,39 @@
       color: #000;
       box-shadow: 0 0 10px #fff;
     }
+    #emojiProgress {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .circle {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #444;
+      box-shadow: 0 0 5px #000;
+      transition: background 0.3s;
+    }
+    .circle.active {
+      background: #0ff;
+      box-shadow: 0 0 10px #0ff;
+    }
     #adContainer {
       position: fixed;
       bottom: 0;
       width: 100%;
-      text-align: center;
-      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      z-index: 999;
     }
   </style>
 </head>
 <body>
   <button id="homeBtn" style="display:none;">Home</button>
-
-  <div id="home">
+  <div id="home" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
     <h1>Rock Paper Scissors</h1>
     <button id="startBtn">Start Game</button>
   </div>
-
   <div class="emoji-buttons" id="selectionPage">
     <h2>Select 5 emojis:</h2>
     <div class="emoji-list">
@@ -112,30 +128,33 @@
       <span class="emoji" data-emoji="✋">✋</span>
       <span class="emoji" data-emoji="✌️">✌️</span>
     </div>
+    <div id="emojiProgress">
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"></div>
+    </div>
     <p id="chosen"></p>
   </div>
-
   <div class="match-area" id="matchPage">
     <h2>Computer vs Player</h2>
     <div class="scoreboard" id="score">Player: 0 | Computer: 0 | Draw: 0</div>
     <div id="matchEmojis" style="font-size:5em;margin:20px"></div>
   </div>
-
   <div class="result-area" id="resultPage">
     <h2 id="resultText"></h2>
   </div>
-
   <audio id="winSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
 
-  <!-- Ad Container -->
   <div id="adContainer">
     <script type="text/javascript">
       atOptions = {
-        'key': '35b675dd3de935896b51142ba1b9f570',
-        'format': 'iframe',
-        'height': 50,
-        'width': 320,
-        'params': {}
+        'key' : '35b675dd3de935896b51142ba1b9f570',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
       };
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/35b675dd3de935896b51142ba1b9f570/invoke.js"></script>
@@ -162,12 +181,18 @@
       document.getElementById('homeBtn').style.display = 'none';
       document.getElementById('chosen').innerText = '';
       document.getElementById('score').innerText = `Player: 0 | Computer: 0 | Draw: 0`;
+      document.querySelectorAll('.circle').forEach(c => c.classList.remove('active'));
     }
 
     function selectEmoji(emoji) {
       if (selected.length >= 5) return;
       selected.push(emoji);
       document.getElementById('chosen').innerText = `Selected: ${selected.join(' ')}`;
+      document.querySelectorAll('.circle').forEach((circle, index) => {
+        if (index < selected.length) {
+          circle.classList.add('active');
+        }
+      });
       if (selected.length === 5) {
         setTimeout(() => {
           document.getElementById('selectionPage').style.display = 'none';
@@ -237,6 +262,7 @@
       document.getElementById('selectionPage').style.display = 'flex';
       document.getElementById('chosen').innerText = '';
       document.getElementById('score').innerText = `Player: 0 | Computer: 0 | Draw: 0`;
+      document.querySelectorAll('.circle').forEach(c => c.classList.remove('active'));
     }
 
     window.onload = () => {
